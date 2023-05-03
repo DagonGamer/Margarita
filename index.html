@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Margarita</title>
+
+    <style>
+
+        body > img {
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            z-index: -10000;
+            object-fit: cover;
+        }
+
+        div.Flor {
+            animation: Rotar 60s linear infinite;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: -100;
+        }
+
+        div.Flor > img[src="Centro.png"] {
+            width: 25vmin;
+            height: 25vmin;
+            position: fixed;
+            top: calc(50vh - 12.5vmin);
+            left: calc(50% - 12.5vmin);
+            z-index: 100;
+        }
+
+        body div.Flor > div {
+            position: fixed;
+            top: 50vh;
+            left: 50%;
+            width: 0px;
+            height: 0px;
+            filter: saturate(1) hue-rotate(0deg);
+        }
+
+        div.Flor > div > div {
+            position: absolute;
+            top: -30vmin;
+            left: -6.25vmin;
+            height: 60vmin;
+            width: 12.5vmin;
+            transform: rotate(var(--Grados));
+            pointer-events: none;
+        }
+
+        div.Flor > div > div img {
+            height: 25vmin;
+            width: 12.5vmin;
+            filter: drop-shadow(0 0 0.75vmin gray) brightness(1.2);
+            pointer-events: all;
+        }
+
+        @keyframes Rotar {
+
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+            
+        }
+
+        div.Form {
+            display: grid;
+            grid-template-columns: 10rem 20rem;
+            grid-auto-rows: 2rem;
+            padding: 1rem;
+            background: #ffffffcc;
+            width: fit-content;
+            border-radius: 1rem;
+        }
+
+        div.Form p {
+            margin: 0.5rem;
+        }
+
+        div.Form input[type="number"] {
+            margin: 0.25rem 0.5rem;
+            padding: 0px 0.5rem;
+            border-radius: 0.25rem;
+            border: none;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="Form">
+
+        <input type="checkbox" name="Color" id="a"> <p>Color</p>
+        <input type="range" min="0" max="360" name="" id="b"> <p>Color</p>
+        <input type="range" min="1" max="20" name="" id="c"> <p>Saturación</p>
+        <button>Rehacer Flor</button>
+        <input type="number" name="" id="d" placeholder="Petalos" min="10" max="100">
+
+    </div>
+
+    <div class="Flor">
+
+        <img src="Centro.png" alt="">
+
+        <div></div>
+
+    </div>
+
+    <img src="Fondo.jpg" alt="">
+
+    <script>
+
+        let Flor = (Media, Margen) => {
+
+            document.querySelector("body div.Flor > div").innerHTML = "";
+
+            let Petalos = Math.ceil(Math.random() * Math.ceil(Margen)) + Math.ceil(Media) - Math.ceil(Margen / 2);
+
+            for (i = 0; i < Petalos; i++)
+                document.querySelector("body div.Flor > div").innerHTML += `
+                    <div style="--Grados: ${Math.random() * 10 + i * 360 / Petalos}deg;">
+                        <img src="Petalo.png" alt="">
+                    </div>
+            `
+
+            Array.from(document.querySelectorAll("body div.Flor > div > div img"))
+                    .forEach(el => {
+                        el.addEventListener("click", () => el.parentNode.remove())
+                    });
+
+        }
+
+        Flor(25, 10);
+
+        let Check = document.querySelector("input#a");
+        let Color = document.querySelector("input#b");
+        let Saturación = document.querySelector("input#c");
+
+        setInterval((e) => {
+            if (Check.checked)
+                document.querySelector("div.Flor > div").style.filter = `saturate(${Saturación.value}) hue-rotate(${Color.value}deg)`;
+            else document.querySelector("div.Flor > div").style = null;
+        }, 50)
+
+        let Boton = document.querySelector("button");
+
+        Boton.onclick = () => {
+            let pet = Number(Math.max(Math.min(document.querySelector("input#d").value, 100), 10));
+            Flor(pet, 10);
+        }
+
+    </script>
+    
+</body>
+</html>
